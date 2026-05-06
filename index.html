@@ -374,10 +374,112 @@ footer {
   border-top: 1px solid rgba(255,255,255,0.04);
 }
 
+/* ── DAILY ORACLE ── */
+.oracle-day {
+  max-width: 680px;
+  margin: 0 auto 1.2rem;
+  padding: 0 1rem;
+}
+.oracle-day-inner {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+.oracle-day-inner::before {
+  content: '今';
+  position: absolute;
+  top: -0.9rem; left: 50%; transform: translateX(-50%);
+  background: var(--ink);
+  padding: 0 0.8rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.2em;
+}
+.od-label {
+  font-size: 0.62rem;
+  color: var(--ivory-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.9rem;
+  text-align: center;
+}
+.od-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.od-pillar { text-align: center; min-width: 60px; }
+.od-stem   { font-size: 1.8rem; color: var(--gold); line-height: 1.1; }
+.od-branch { font-size: 1.8rem; color: var(--ivory); line-height: 1.1; }
+.od-en     { font-size: 0.58rem; color: var(--ivory-dim); margin-top: 0.3rem; line-height: 1.4; }
+.od-element { flex: 1; min-width: 140px; }
+.od-elem-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+}
+.od-elem-rel {
+  font-size: 0.68rem;
+  margin-top: 0.25rem;
+  line-height: 1.5;
+}
+.od-elem-rel.favourable { color: var(--gold); }
+.od-elem-rel.neutral    { color: var(--ivory-dim); }
+.od-elem-rel.dim        { color: var(--ivory-dim); opacity: 0.5; }
+.od-boost-badge {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  margin-top: 0.4rem;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+}
+.od-boost-badge.off { color: var(--ivory-dim); opacity: 0.5; }
+.od-mode-wrap { text-align: right; }
+.od-mode-btns { display: flex; gap: 0.4rem; justify-content: flex-end; margin-bottom: 0.4rem; }
+.btn-mode {
+  background: none;
+  border: 1px solid rgba(201,162,39,0.25);
+  color: var(--ivory-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-mode.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201,162,39,0.08);
+}
+.btn-mode:hover { border-color: var(--gold); color: var(--gold); }
+.od-mode-desc {
+  font-size: 0.6rem;
+  color: var(--ivory-dim);
+  font-style: italic;
+  line-height: 1.4;
+  max-width: 160px;
+  margin-left: auto;
+}
+.ball.today-el {
+  background: rgba(139,26,26,0.12);
+  border-color: rgba(180,70,70,0.5);
+  color: #bf6060;
+  box-shadow: 0 0 10px rgba(139,26,26,0.18);
+}
+
 @media (max-width: 480px) {
   .pillars { gap: 0.4rem; }
   .p-stem, .p-branch { font-size: 1.5rem; }
   .set-body { flex-direction: column; }
+  .od-mode-wrap { text-align: left; }
+  .od-mode-btns { justify-content: flex-start; }
+  .od-mode-desc { margin-left: 0; max-width: 100%; }
 }
 </style>
 </head>
@@ -435,6 +537,8 @@ footer {
   </div>
 </div>
 
+<div class="oracle-day" id="daily-oracle"></div>
+
 <div class="main">
   <div class="controls">
     <button class="btn-all" onclick="tossAll()">✦ Cast All 10 Sets</button>
@@ -449,7 +553,6 @@ footer {
 // ─── BA ZI CONFIG ───────────────────────────────────────────────
 // Day Master: 庚 Yang Metal (Strong chart — favourable: Water, Wood, Fire)
 // Indirect Wealth (偏財, windfall/lotto) = Yang Wood → prioritise numbers 3 & 8
-// Lucky number pool: unit digits matching Water(1,6), Wood(3,8), Fire(2,7)
 const POOL = [
   // Water 1,6
   1,6,11,16,21,26,31,36,41,46,
@@ -459,22 +562,69 @@ const POOL = [
   2,7,12,17,22,27,32,37,42,47
 ];
 
+// ─── DAILY BA ZI CALCULATION ────────────────────────────────────
+const STEMS_ZH   = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const BRANCHES_ZH= ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const STEM_EN    = ['Yang Wood','Yin Wood','Yang Fire','Yin Fire','Yang Earth',
+                    'Yin Earth','Yang Metal','Yin Metal','Yang Water','Yin Water'];
+const BRANCH_EN  = ['Rat','Ox','Tiger','Rabbit','Dragon','Snake',
+                    'Horse','Goat','Monkey','Rooster','Dog','Pig'];
+const STEM_ELEM  = ['Wood','Wood','Fire','Fire','Earth','Earth',
+                    'Metal','Metal','Water','Water'];
+
+// Anchor: Allen's verified birth Day Pillar · 04 Jan 1989 = 庚辰 · cycle index 16
+const ANCHOR_DATE = new Date(1989, 0, 4);
+const ANCHOR_IDX  = 16;
+
+function getDayPillar(date) {
+  const diff = Math.round((date - ANCHOR_DATE) / 86400000);
+  const idx  = ((ANCHOR_IDX + diff) % 60 + 60) % 60;
+  return {
+    idx,
+    stem:     STEMS_ZH[idx % 10],
+    branch:   BRANCHES_ZH[idx % 12],
+    stemEn:   STEM_EN[idx % 10],
+    branchEn: BRANCH_EN[idx % 12],
+    element:  STEM_ELEM[idx % 10]
+  };
+}
+
+// Allen's favourable elements (Ba Zi analysis)
+const ALLEN_FAV = ['Water', 'Wood', 'Fire'];
+
+// Full element pools — Mark Six 1–49, unit digit mapping
+const ELEMENT_POOLS = {
+  Wood:  [3,8,13,18,23,28,33,38,43,48],
+  Water: [1,6,11,16,21,26,31,36,41,46],
+  Fire:  [2,7,12,17,22,27,32,37,42,47],
+  Earth: [5,10,15,20,25,30,35,40,45],
+  Metal: [4,9,14,19,24,29,34,39,44,49]
+};
+
+// Element display info
+const ELEM_INFO = {
+  Wood:  { zh:'木', rel:'偏財 · Indirect Wealth · Highest Priority', cls:'favourable' },
+  Water: { zh:'水', rel:'Output Element · Favourable',               cls:'favourable' },
+  Fire:  { zh:'火', rel:'Power · 2026 Annual Energy · Favourable',   cls:'favourable' },
+  Earth: { zh:'土', rel:'Resource (excess in chart) · Caution',      cls:'neutral'    },
+  Metal: { zh:'金', rel:'Same Element · Weakens chart',              cls:'dim'        }
+};
+
+// Mode: A = shift weighting for any element; B = only boost if aligned with Allen's chart
+let dailyMode = 'B';
+
 // ─── I CHING HEXAGRAM TABLE ─────────────────────────────────────
-// Binary value per trigram (reading bottom→top, yang=1, yin=0)
-// Qian=7 Dui=3 Li=5 Zhen=1 Xun=6 Kan=2 Gen=4 Kun=0
 const BIN_IDX = {7:0,3:1,5:2,1:3,6:4,2:5,4:6,0:7};
 
-// King Wen sequence [upper_idx][lower_idx]
-// Col order (lower): Qian Dui Li Zhen Xun Kan Gen Kun
 const HEX_TABLE = [
-  [ 1, 10, 13, 25, 44,  6, 33, 12], // upper Qian
-  [43, 58, 49, 17, 28, 47, 31, 45], // upper Dui
-  [14, 38, 30, 21, 50, 64, 56, 35], // upper Li
-  [34, 54, 55, 51, 32, 40, 62, 16], // upper Zhen
-  [ 9, 61, 37, 42, 57, 59, 53, 20], // upper Xun
-  [ 5, 60, 63,  3, 48, 29, 39,  8], // upper Kan
-  [26, 41, 22, 27, 18,  4, 52, 23], // upper Gen
-  [11, 19, 36, 24, 46,  7, 15,  2]  // upper Kun
+  [ 1, 10, 13, 25, 44,  6, 33, 12],
+  [43, 58, 49, 17, 28, 47, 31, 45],
+  [14, 38, 30, 21, 50, 64, 56, 35],
+  [34, 54, 55, 51, 32, 40, 62, 16],
+  [ 9, 61, 37, 42, 57, 59, 53, 20],
+  [ 5, 60, 63,  3, 48, 29, 39,  8],
+  [26, 41, 22, 27, 18,  4, 52, 23],
+  [11, 19, 36, 24, 46,  7, 15,  2]
 ];
 
 const HEX_NAMES = [
@@ -503,7 +653,6 @@ const HEX_NAMES = [
   'Jì Jì · Completion','Wèi Jì · Transition'
 ];
 
-// Hexagram Unicode: Hex 1 = U+4DC0
 function hexGlyph(n) { return String.fromCodePoint(0x4DBF + n); }
 
 // ─── RNG ────────────────────────────────────────────────────────
@@ -515,15 +664,35 @@ function mkRng(seed) {
   };
 }
 
+// ─── PICK NUMBERS (daily mode aware) ────────────────────────────
 function pickNumbers(hexNum, coinSums) {
   const seed = hexNum * 101 + coinSums.reduce((a,b)=>a+b,0) * 17;
-  const rng = mkRng(seed);
-  const pool = [...POOL];
+  const rng  = mkRng(seed);
+
+  const today     = getDayPillar(new Date());
+  const isFav     = ALLEN_FAV.includes(today.element);
+  const doBoost   = dailyMode === 'A' || (dailyMode === 'B' && isFav);
+
+  // Build pool — duplicating today's element numbers increases their selection probability
+  let pool = [...POOL];
+  if (doBoost) {
+    const boost = ELEMENT_POOLS[today.element] || [];
+    pool = [...pool, ...boost];
+  }
+
+  // Fisher-Yates shuffle
   for (let i = pool.length-1; i > 0; i--) {
     const j = Math.floor(rng() * (i+1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
   }
-  return pool.slice(0,6).sort((a,b)=>a-b);
+
+  // Pick first 6 unique numbers
+  const seen = new Set(), result = [];
+  for (const n of pool) {
+    if (!seen.has(n)) { seen.add(n); result.push(n); }
+    if (result.length === 6) break;
+  }
+  return result.sort((a,b) => a-b);
 }
 
 // ─── COIN TOSS ──────────────────────────────────────────────────
@@ -541,6 +710,54 @@ function buildHexagram() {
   const up = lines[5]*4+lines[4]*2+lines[3];
   const num = HEX_TABLE[BIN_IDX[up]][BIN_IDX[lo]];
   return {num, lines, sums};
+}
+
+// ─── DAILY ORACLE UI ────────────────────────────────────────────
+function renderDailyOracle() {
+  const today   = getDayPillar(new Date());
+  const info    = ELEM_INFO[today.element];
+  const isFav   = ALLEN_FAV.includes(today.element);
+  const boostOn = dailyMode === 'A' || (dailyMode === 'B' && isFav);
+  const dateStr = new Date().toLocaleDateString('en-GB', {
+    weekday:'long', day:'numeric', month:'long', year:'numeric'
+  });
+
+  const modeDesc = dailyMode === 'A'
+    ? `${today.element} numbers boosted regardless of alignment`
+    : (isFav
+        ? `${today.element} is favourable — boost active`
+        : `${today.element} not favourable — base pool only`);
+
+  document.getElementById('daily-oracle').innerHTML = `
+    <div class="oracle-day-inner">
+      <div class="od-label">Today's Day Pillar · ${dateStr}</div>
+      <div class="od-row">
+        <div class="od-pillar">
+          <div class="od-stem">${today.stem}</div>
+          <div class="od-branch">${today.branch}</div>
+          <div class="od-en">${today.stemEn}<br>${today.branchEn}</div>
+        </div>
+        <div class="od-element">
+          <div class="od-elem-name">${today.element} ${info.zh}</div>
+          <div class="od-elem-rel ${info.cls}">${info.rel}</div>
+          <div class="od-boost-badge ${boostOn ? '' : 'off'}">${boostOn ? '⊕ Boost Active' : '— Base Pool'}</div>
+        </div>
+        <div class="od-mode-wrap">
+          <div class="od-mode-btns">
+            <button class="btn-mode ${dailyMode==='A'?'active':''}" onclick="setMode('A')">A</button>
+            <button class="btn-mode ${dailyMode==='B'?'active':''}" onclick="setMode('B')">B</button>
+          </div>
+          <div class="od-mode-desc">${modeDesc}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setMode(m) {
+  dailyMode = m;
+  renderDailyOracle();
+  buildSets(); // reset sets so next toss uses new mode
 }
 
 // ─── UI ─────────────────────────────────────────────────────────
@@ -599,7 +816,6 @@ function tossSet(i, fast=false){
   const {num, lines, sums} = buildHexagram();
   const numbers = pickNumbers(num, sums);
 
-  // Build line elements (reversed display = bottom line appears at bottom visually)
   const lineEls=[];
   for(let l=0;l<6;l++){
     const el=document.createElement('div');
@@ -611,7 +827,6 @@ function tossSet(i, fast=false){
   }
 
   const D=fast?0:220;
-
   lineEls.forEach((el,idx)=>setTimeout(()=>el.classList.add('show'), idx*D));
 
   const afterLines=fast?80:6*D+180;
@@ -624,12 +839,23 @@ function tossSet(i, fast=false){
     card.classList.add('done');
   }, afterLines);
 
+  // Ball coloring:
+  // Gold highlight  = Wood numbers (3,8 unit digit) — 偏財, always prioritised
+  // Red tint        = today's element numbers, when boost is active and not Wood
+  const today     = getDayPillar(new Date());
+  const todayPool = ELEMENT_POOLS[today.element] || [];
+  const isFav     = ALLEN_FAV.includes(today.element);
+  const boostOn   = dailyMode === 'A' || (dailyMode === 'B' && isFav);
+
   numbers.forEach((n,idx)=>{
     const b=document.createElement('div');
     b.className='ball';
-    // Highlight numbers whose digit matches Wood (3,8) — highest priority element
     const u=n%10;
-    if(u===3||u===8) b.classList.add('highlight');
+    if(u===3||u===8) {
+      b.classList.add('highlight');
+    } else if(boostOn && todayPool.includes(n)) {
+      b.classList.add('today-el');
+    }
     b.textContent=String(n).padStart(2,'0');
     balls.appendChild(b);
     setTimeout(()=>b.classList.add('show'), afterLines+(idx+1)*(fast?40:120));
@@ -651,6 +877,7 @@ async function tossAll(){
 
 function resetAll(){ buildSets(); }
 
+renderDailyOracle();
 buildSets();
 
 // ─── PWA: Register Service Worker ───────────────────────────────
