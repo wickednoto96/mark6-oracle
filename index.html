@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#c9a227">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mark Six Oracle">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="manifest" href="./manifest.json">
+<title>八字 · 易經 | Mark Six Oracle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #07050a;
+  --gold: #c9a227;
+  --gold-dim: #7a6218;
+  --gold-bright: #e8c040;
+  --red: #8b1a1a;
+  --ivory: #ede0c4;
+  --ivory-dim: #8a7a60;
+  --panel: rgba(255,255,255,0.025);
+  --border: rgba(201,162,39,0.18);
+  --border-active: rgba(201,162,39,0.5);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--ink);
+  color: var(--ivory);
+  font-family: 'Crimson Text', Georgia, serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 15% 80%, rgba(139,26,26,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 85% 15%, rgba(201,162,39,0.07) 0%, transparent 55%);
+}
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 2.5rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+header::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.title-zh {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 0.35em;
+  text-shadow: 0 0 40px rgba(201,162,39,0.3);
+}
+.title-en {
+  font-size: 0.72rem;
+  color: var(--ivory-dim);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+.title-sub {
+  font-size: 0.7rem;
+  color: rgba(201,162,39,0.5);
+  letter-spacing: 0.15em;
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+/* ── BA ZI CHART ── */
+.bazi-wrap {
+  max-width: 680px;
+  margin: 1.8rem auto;
+  padding: 0 1rem;
+}
+.bazi-chart {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 1.2rem 1.5rem;
+  position: relative;
+}
+.bazi-chart::before {
+  content: '命';
+  position: absolute;
+  top: -0.9rem; left: 50%; transform: translateX(-50%);
+  background: var(--ink);
+  padding: 0 0.8rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.2em;
+}
+.chart-label {
+  font-size: 0.62rem;
+  color: var(--ivory-dim);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+.pillar {
+  text-align: center;
+  padding: 0.5rem 0.3rem;
+  border: 1px solid rgba(201,162,39,0.1);
+}
+.pillar.day-pillar {
+  border-color: rgba(201,162,39,0.4);
+  background: rgba(201,162,39,0.04);
+}
+.p-label {
+  font-size: 0.58rem;
+  color: var(--ivory-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.p-stem {
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--gold);
+}
+.day-pillar .p-stem { color: #fff; }
+.p-branch {
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--ivory);
+}
+.p-en {
+  font-size: 0.58rem;
+  color: var(--ivory-dim);
+  margin-top: 0.3rem;
+  line-height: 1.3;
+}
+.chart-meta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: var(--ivory-dim);
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(201,162,39,0.1);
+  justify-content: center;
+}
+.chart-meta strong { color: var(--gold); font-weight: normal; }
+.elem-tags {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+.etag {
+  border: 1px solid rgba(201,162,39,0.35);
+  color: var(--gold);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.6rem;
+  font-family: 'Cinzel', serif;
+}
+
+/* ── MAIN ── */
+.main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+.controls {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+  align-items: center;
+}
+.btn-all {
+  background: none;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s;
+}
+.btn-all:hover { background: rgba(201,162,39,0.1); }
+.btn-reset {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--ivory-dim);
+  font-family: 'Crimson Text', serif;
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  letter-spacing: 0.05em;
+}
+.btn-reset:hover { border-color: rgba(255,255,255,0.28); color: var(--ivory); }
+
+/* ── SET CARD ── */
+.set-card {
+  border: 1px solid var(--border);
+  margin-bottom: 0.6rem;
+  background: var(--panel);
+  transition: border-color 0.3s;
+}
+.set-card.done { border-color: rgba(201,162,39,0.3); }
+
+.set-header {
+  display: flex;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  gap: 0.8rem;
+}
+.s-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  color: var(--ivory-dim);
+  letter-spacing: 0.2em;
+  min-width: 42px;
+}
+.btn-toss {
+  background: none;
+  border: 1px solid rgba(201,162,39,0.45);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.btn-toss:hover { background: rgba(201,162,39,0.1); }
+.btn-toss:disabled { opacity: 0.25; cursor: not-allowed; }
+
+.toss-hint {
+  flex: 1;
+  font-size: 0.65rem;
+  color: var(--ivory-dim);
+  font-style: italic;
+  text-align: right;
+}
+
+/* ── SET BODY ── */
+.set-body {
+  display: none;
+  padding: 0.6rem 1rem 1rem;
+  border-top: 1px solid rgba(201,162,39,0.08);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.set-body.visible { display: flex; }
+
+/* Hexagram lines */
+.hex-lines {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 5px;
+  min-width: 75px;
+  padding-top: 0.3rem;
+}
+.hline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transform: translateX(-5px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.hline.show { opacity: 1; transform: translateX(0); }
+.bar-solid {
+  height: 3px;
+  width: 66px;
+  background: var(--gold);
+  box-shadow: 0 0 6px rgba(201,162,39,0.4);
+}
+.bar-l, .bar-r {
+  height: 3px;
+  width: 28px;
+  background: #3d3020;
+}
+.chg { font-size: 0.55rem; color: var(--red); margin-left: 2px; }
+
+/* Hex info */
+.hex-meta {
+  min-width: 110px;
+}
+.hex-glyph {
+  font-size: 3.5rem;
+  color: var(--gold);
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.4s, transform 0.4s;
+  text-shadow: 0 0 20px rgba(201,162,39,0.4);
+}
+.hex-glyph.show { opacity: 1; transform: scale(1); }
+.hex-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  color: var(--ivory-dim);
+  letter-spacing: 0.15em;
+  margin-top: 0.4rem;
+}
+.hex-name {
+  font-size: 0.8rem;
+  color: var(--ivory);
+  margin-top: 0.1rem;
+  line-height: 1.3;
+}
+
+/* Numbers */
+.num-section {
+  flex: 1;
+  min-width: 180px;
+}
+.num-label {
+  font-size: 0.58rem;
+  color: var(--ivory-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.balls {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.ball {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  color: var(--gold);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.ball.show {
+  opacity: 1;
+  transform: scale(1);
+}
+.ball.highlight {
+  background: rgba(201,162,39,0.12);
+  box-shadow: 0 0 12px rgba(201,162,39,0.2);
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 0.18em;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+@media (max-width: 480px) {
+  .pillars { gap: 0.4rem; }
+  .p-stem, .p-branch { font-size: 1.5rem; }
+  .set-body { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-zh">八字 · 易經</div>
+  <div class="title-en">Ba Zi &amp; I Ching · Mark Six Oracle</div>
+  <div class="title-sub">Numbers weighted by elemental destiny · For entertainment only</div>
+</header>
+
+<div class="bazi-wrap">
+  <div class="bazi-chart">
+    <div class="chart-label">Your Four Pillars · 四柱命理 · Born 04 Jan 1989 · 04:00</div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="p-label">Hour 時</div>
+        <div class="p-stem">戊</div>
+        <div class="p-branch">寅</div>
+        <div class="p-en">Yang Earth<br>Tiger</div>
+      </div>
+      <div class="pillar day-pillar">
+        <div class="p-label">Day 日 ★</div>
+        <div class="p-stem" style="color:#fff">庚</div>
+        <div class="p-branch">辰</div>
+        <div class="p-en">Yang Metal<br>Dragon</div>
+      </div>
+      <div class="pillar">
+        <div class="p-label">Month 月</div>
+        <div class="p-stem">戊</div>
+        <div class="p-branch">子</div>
+        <div class="p-en">Yang Earth<br>Rat</div>
+      </div>
+      <div class="pillar">
+        <div class="p-label">Year 年</div>
+        <div class="p-stem">戊</div>
+        <div class="p-branch">辰</div>
+        <div class="p-en">Yang Earth<br>Dragon</div>
+      </div>
+    </div>
+    <div class="chart-meta">
+      <span>Day Master: <strong>庚 Yang Metal</strong></span>
+      <span>Chart: <strong>Strong (Earth-dominant)</strong></span>
+      <span>Luck Pillar: <strong>壬辰 Yang Water Dragon</strong></span>
+      <span>2026 Annual: <strong>丙午 Yang Fire Horse</strong></span>
+    </div>
+    <div class="elem-tags">
+      <span class="etag">Water 水 · 1 &amp; 6</span>
+      <span class="etag">Wood 木 · 3 &amp; 8</span>
+      <span class="etag">Fire 火 · 2 &amp; 7</span>
+    </div>
+    <div style="text-align:center;font-size:0.62rem;color:var(--ivory-dim);margin-top:0.6rem;font-style:italic;">
+      Strong Yang Metal → Favours Water (output), Wood (indirect wealth / 偏財), Fire (power · 2026 annual energy)
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="controls">
+    <button class="btn-all" onclick="tossAll()">✦ Cast All 10 Sets</button>
+    <button class="btn-reset" onclick="resetAll()">↺ Reset</button>
+  </div>
+  <div id="sets"></div>
+</div>
+
+<footer>Hexagrams derived from 3-coin I Ching method · Numbers selected from Ba Zi elemental pool · Entertainment only · Good luck, Captain.</footer>
+
+<script>
+// ─── BA ZI CONFIG ───────────────────────────────────────────────
+// Day Master: 庚 Yang Metal (Strong chart — favourable: Water, Wood, Fire)
+// Indirect Wealth (偏財, windfall/lotto) = Yang Wood → prioritise numbers 3 & 8
+// Lucky number pool: unit digits matching Water(1,6), Wood(3,8), Fire(2,7)
+const POOL = [
+  // Water 1,6
+  1,6,11,16,21,26,31,36,41,46,
+  // Wood 3,8 — highest priority (indirect wealth)
+  3,8,13,18,23,28,33,38,43,48,
+  // Fire 2,7 — 2026 annual energy
+  2,7,12,17,22,27,32,37,42,47
+];
+
+// ─── I CHING HEXAGRAM TABLE ─────────────────────────────────────
+// Binary value per trigram (reading bottom→top, yang=1, yin=0)
+// Qian=7 Dui=3 Li=5 Zhen=1 Xun=6 Kan=2 Gen=4 Kun=0
+const BIN_IDX = {7:0,3:1,5:2,1:3,6:4,2:5,4:6,0:7};
+
+// King Wen sequence [upper_idx][lower_idx]
+// Col order (lower): Qian Dui Li Zhen Xun Kan Gen Kun
+const HEX_TABLE = [
+  [ 1, 10, 13, 25, 44,  6, 33, 12], // upper Qian
+  [43, 58, 49, 17, 28, 47, 31, 45], // upper Dui
+  [14, 38, 30, 21, 50, 64, 56, 35], // upper Li
+  [34, 54, 55, 51, 32, 40, 62, 16], // upper Zhen
+  [ 9, 61, 37, 42, 57, 59, 53, 20], // upper Xun
+  [ 5, 60, 63,  3, 48, 29, 39,  8], // upper Kan
+  [26, 41, 22, 27, 18,  4, 52, 23], // upper Gen
+  [11, 19, 36, 24, 46,  7, 15,  2]  // upper Kun
+];
+
+const HEX_NAMES = [
+  '',
+  'Qiān · Heaven','Kūn · Earth','Zhūn · Beginning',
+  'Méng · Innocence','Xū · Waiting','Sòng · Conflict',
+  'Shī · Army','Bǐ · Union','Xiǎo Xù · Small Taming',
+  'Lǚ · Treading','Tài · Peace','Pǐ · Standstill',
+  'Tóng Rén · Fellowship','Dà Yǒu · Abundance','Qiān · Modesty',
+  'Yù · Enthusiasm','Suí · Following','Gù · Repair',
+  'Lín · Approach','Guān · Contemplation','Shì Kè · Biting Through',
+  'Bì · Grace','Bō · Splitting Apart','Fù · Return',
+  'Wú Wàng · Innocence','Dà Xù · Great Taming','Yí · Nourishment',
+  'Dà Guò · Excess','Kǎn · The Abyss','Lí · The Flame',
+  'Xián · Influence','Héng · Duration','Dùn · Retreat',
+  'Dà Zhuàng · Great Strength','Jìn · Progress','Míng Yí · Darkening',
+  'Jiā Rén · Family','Kuí · Opposition','Jiǎn · Obstruction',
+  'Jiě · Deliverance','Sǔn · Decrease','Yì · Increase',
+  'Guài · Breakthrough','Gòu · Encounter','Cuì · Gathering',
+  'Shēng · Rising','Kùn · Adversity','Jǐng · The Well',
+  'Gé · Revolution','Dǐng · The Vessel','Zhèn · Thunder',
+  'Gèn · Mountain','Jiàn · Gradual Advance','Guī Mèi · Maiden',
+  'Fēng · Abundance','Lǚ · The Wanderer','Xùn · The Wind',
+  'Duì · Joy','Huàn · Dispersion','Jié · Limitation',
+  'Zhōng Fú · Inner Truth','Xiǎo Guò · Small Steps',
+  'Jì Jì · Completion','Wèi Jì · Transition'
+];
+
+// Hexagram Unicode: Hex 1 = U+4DC0
+function hexGlyph(n) { return String.fromCodePoint(0x4DBF + n); }
+
+// ─── RNG ────────────────────────────────────────────────────────
+function mkRng(seed) {
+  let s = (seed ^ 0xdeadbeef) >>> 0;
+  return () => {
+    s ^= s << 13; s ^= s >>> 17; s ^= s << 5;
+    return (s >>> 0) / 0x100000000;
+  };
+}
+
+function pickNumbers(hexNum, coinSums) {
+  const seed = hexNum * 101 + coinSums.reduce((a,b)=>a+b,0) * 17;
+  const rng = mkRng(seed);
+  const pool = [...POOL];
+  for (let i = pool.length-1; i > 0; i--) {
+    const j = Math.floor(rng() * (i+1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0,6).sort((a,b)=>a-b);
+}
+
+// ─── COIN TOSS ──────────────────────────────────────────────────
+function toss3() { return [1,2,3].map(()=>Math.random()>.5?3:2); }
+
+function buildHexagram() {
+  const sums=[], lines=[];
+  for (let i=0;i<6;i++){
+    const coins=toss3();
+    const s=coins[0]+coins[1]+coins[2];
+    sums.push(s);
+    lines.push(s===7||s===9?1:0);
+  }
+  const lo = lines[2]*4+lines[1]*2+lines[0];
+  const up = lines[5]*4+lines[4]*2+lines[3];
+  const num = HEX_TABLE[BIN_IDX[up]][BIN_IDX[lo]];
+  return {num, lines, sums};
+}
+
+// ─── UI ─────────────────────────────────────────────────────────
+function lineHTML(lineIdx, sums) {
+  const v = sums[lineIdx];
+  const yang = v===7||v===9;
+  const chg  = v===6||v===9;
+  const marker = chg ? `<span class="chg">${v===9?'○':'✕'}</span>` : '';
+  if(yang) return `<div class="bar-solid"></div>${marker}`;
+  return `<div class="bar-l"></div><div class="bar-r"></div>${marker}`;
+}
+
+function buildSets(){
+  const c=document.getElementById('sets');
+  c.innerHTML='';
+  for(let i=1;i<=10;i++){
+    c.innerHTML+=`
+    <div class="set-card" id="card-${i}">
+      <div class="set-header">
+        <span class="s-num">SET ${String(i).padStart(2,'0')}</span>
+        <button class="btn-toss" id="btn-${i}" onclick="tossSet(${i})">✦ Toss Coins</button>
+        <span class="toss-hint" id="hint-${i}">Click to cast</span>
+      </div>
+      <div class="set-body" id="body-${i}">
+        <div class="hex-lines" id="hlines-${i}"></div>
+        <div class="hex-meta">
+          <div class="hex-glyph" id="glyph-${i}"></div>
+          <div class="hex-num"  id="hnum-${i}"></div>
+          <div class="hex-name" id="hname-${i}"></div>
+        </div>
+        <div class="num-section">
+          <div class="num-label">Mark Six · 六合彩</div>
+          <div class="balls" id="balls-${i}"></div>
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+function tossSet(i, fast=false){
+  const btn   = document.getElementById(`btn-${i}`);
+  const body  = document.getElementById(`body-${i}`);
+  const hlines= document.getElementById(`hlines-${i}`);
+  const glyph = document.getElementById(`glyph-${i}`);
+  const hnum  = document.getElementById(`hnum-${i}`);
+  const hname = document.getElementById(`hname-${i}`);
+  const balls = document.getElementById(`balls-${i}`);
+  const hint  = document.getElementById(`hint-${i}`);
+  const card  = document.getElementById(`card-${i}`);
+
+  btn.disabled=true;
+  body.className='set-body visible';
+  hlines.innerHTML=''; glyph.innerHTML=''; hnum.innerHTML=''; hname.innerHTML=''; balls.innerHTML='';
+  glyph.className='hex-glyph'; hint.textContent='Casting…';
+
+  const {num, lines, sums} = buildHexagram();
+  const numbers = pickNumbers(num, sums);
+
+  // Build line elements (reversed display = bottom line appears at bottom visually)
+  const lineEls=[];
+  for(let l=0;l<6;l++){
+    const el=document.createElement('div');
+    el.className='hline';
+    el.innerHTML=lineHTML(l,sums);
+    el.title=`Line ${l+1}: sum=${sums[l]} (${sums[l]===7?'Young Yang':sums[l]===8?'Young Yin':sums[l]===9?'Old Yang ○':'Old Yin ✕'})`;
+    hlines.appendChild(el);
+    lineEls.push(el);
+  }
+
+  const D=fast?0:220;
+
+  lineEls.forEach((el,idx)=>setTimeout(()=>el.classList.add('show'), idx*D));
+
+  const afterLines=fast?80:6*D+180;
+  setTimeout(()=>{
+    glyph.textContent=hexGlyph(num);
+    glyph.classList.add('show');
+    hnum.textContent=`Hexagram ${num}`;
+    hname.textContent=HEX_NAMES[num]||'';
+    hint.textContent='☯';
+    card.classList.add('done');
+  }, afterLines);
+
+  numbers.forEach((n,idx)=>{
+    const b=document.createElement('div');
+    b.className='ball';
+    // Highlight numbers whose digit matches Wood (3,8) — highest priority element
+    const u=n%10;
+    if(u===3||u===8) b.classList.add('highlight');
+    b.textContent=String(n).padStart(2,'0');
+    balls.appendChild(b);
+    setTimeout(()=>b.classList.add('show'), afterLines+(idx+1)*(fast?40:120));
+  });
+
+  const total=afterLines+numbers.length*(fast?40:120)+250;
+  setTimeout(()=>{ btn.disabled=false; btn.textContent='↺ Re-toss'; }, total);
+}
+
+async function tossAll(){
+  const btn=document.querySelector('.btn-all');
+  btn.disabled=true;
+  for(let i=1;i<=10;i++){
+    tossSet(i,true);
+    await new Promise(r=>setTimeout(r,60));
+  }
+  setTimeout(()=>btn.disabled=false, 2000);
+}
+
+function resetAll(){ buildSets(); }
+
+buildSets();
+
+// ─── PWA: Register Service Worker ───────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(() => console.log('[Mark Six Oracle] Service worker registered.'))
+      .catch(err => console.warn('[Mark Six Oracle] SW registration failed:', err));
+  });
+}
+</script>
+</body>
+</html>
