@@ -3,19 +3,30 @@
 
 const CACHE_NAME = 'mark6-oracle-v1';
 
-const ASSETS = [
+// Core assets — must cache, app won't work without these
+const CORE_ASSETS = [
   './index.html',
   './manifest.json',
   './icons/icon-192.png',
-  './icons/icon-512.png',
+  './icons/icon-512.png'
+];
+
+// Optional assets — cache if possible, not fatal if they fail
+const OPTIONAL_ASSETS = [
   'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;1,400&display=swap'
 ];
 
-// Install: cache everything
+// Install: cache core files, attempt optional ones
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS);
+      // Core files must succeed
+      return cache.addAll(CORE_ASSETS).then(() => {
+        // Optional files — fail silently
+        return Promise.allSettled(
+          OPTIONAL_ASSETS.map(url => cache.add(url).catch(() => {}))
+        );
+      });
     })
   );
   self.skipWaiting();
