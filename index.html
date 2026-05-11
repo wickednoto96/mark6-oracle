@@ -3,12 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#c9a227">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Mark Six Oracle">
-<link rel="apple-touch-icon" href="./icons/icon-192.png">
-<link rel="manifest" href="./manifest.json">
 <title>八字 · 易經 | Mark Six Oracle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
@@ -17,469 +11,130 @@
   --ink: #07050a;
   --gold: #c9a227;
   --gold-dim: #7a6218;
-  --gold-bright: #e8c040;
   --red: #8b1a1a;
+  --red-soft: #a04040;
   --ivory: #ede0c4;
   --ivory-dim: #8a7a60;
   --panel: rgba(255,255,255,0.025);
   --border: rgba(201,162,39,0.18);
-  --border-active: rgba(201,162,39,0.5);
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
+* { margin:0; padding:0; box-sizing:border-box; }
 body {
-  background: var(--ink);
-  color: var(--ivory);
-  font-family: 'Crimson Text', Georgia, serif;
-  min-height: 100vh;
+  background:var(--ink); color:var(--ivory);
+  font-family:'Crimson Text',Georgia,serif; min-height:100vh;
   background-image:
-    radial-gradient(ellipse 60% 40% at 15% 80%, rgba(139,26,26,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 85% 15%, rgba(201,162,39,0.07) 0%, transparent 55%);
+    radial-gradient(ellipse 60% 40% at 15% 80%,rgba(139,26,26,0.12) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 50% at 85% 15%,rgba(201,162,39,0.07) 0%,transparent 55%);
 }
 
-/* ── HEADER ── */
-header {
-  text-align: center;
-  padding: 2.5rem 1rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-}
-header::before {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 120px; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-.title-zh {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  font-weight: 900;
-  color: var(--gold);
-  letter-spacing: 0.35em;
-  text-shadow: 0 0 40px rgba(201,162,39,0.3);
-}
-.title-en {
-  font-size: 0.72rem;
-  color: var(--ivory-dim);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  margin-top: 0.4rem;
-}
-.title-sub {
-  font-size: 0.7rem;
-  color: rgba(201,162,39,0.5);
-  letter-spacing: 0.15em;
-  margin-top: 0.3rem;
-  font-style: italic;
-}
+/* HEADER */
+header { text-align:center; padding:2.5rem 1rem 1.5rem; border-bottom:1px solid var(--border); position:relative; }
+header::before { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:120px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.title-zh { font-family:'Cinzel',serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; color:var(--gold); letter-spacing:0.35em; text-shadow:0 0 40px rgba(201,162,39,0.3); }
+.title-en { font-size:0.72rem; color:var(--ivory-dim); letter-spacing:0.3em; text-transform:uppercase; margin-top:0.4rem; }
+.title-sub { font-size:0.7rem; color:rgba(201,162,39,0.5); letter-spacing:0.15em; margin-top:0.3rem; font-style:italic; }
 
-/* ── BA ZI CHART ── */
-.bazi-wrap {
-  max-width: 680px;
-  margin: 1.8rem auto;
-  padding: 0 1rem;
-}
-.bazi-chart {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  padding: 1.2rem 1.5rem;
-  position: relative;
-}
-.bazi-chart::before {
-  content: '命';
-  position: absolute;
-  top: -0.9rem; left: 50%; transform: translateX(-50%);
-  background: var(--ink);
-  padding: 0 0.8rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  color: var(--gold-dim);
-  letter-spacing: 0.2em;
-}
-.chart-label {
-  font-size: 0.62rem;
-  color: var(--ivory-dim);
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-.pillars {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.8rem;
-  margin-bottom: 1.2rem;
-}
-.pillar {
-  text-align: center;
-  padding: 0.5rem 0.3rem;
-  border: 1px solid rgba(201,162,39,0.1);
-}
-.pillar.day-pillar {
-  border-color: rgba(201,162,39,0.4);
-  background: rgba(201,162,39,0.04);
-}
-.p-label {
-  font-size: 0.58rem;
-  color: var(--ivory-dim);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-}
-.p-stem {
-  font-size: 2rem;
-  line-height: 1.1;
-  color: var(--gold);
-}
-.day-pillar .p-stem { color: #fff; }
-.p-branch {
-  font-size: 2rem;
-  line-height: 1.1;
-  color: var(--ivory);
-}
-.p-en {
-  font-size: 0.58rem;
-  color: var(--ivory-dim);
-  margin-top: 0.3rem;
-  line-height: 1.3;
-}
-.chart-meta {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  font-size: 0.75rem;
-  color: var(--ivory-dim);
-  padding-top: 0.8rem;
-  border-top: 1px solid rgba(201,162,39,0.1);
-  justify-content: center;
-}
-.chart-meta strong { color: var(--gold); font-weight: normal; }
-.elem-tags {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  margin-top: 0.7rem;
-  flex-wrap: wrap;
-}
-.etag {
-  border: 1px solid rgba(201,162,39,0.35);
-  color: var(--gold);
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  padding: 0.2rem 0.6rem;
-  font-family: 'Cinzel', serif;
-}
+/* SHARED PANEL */
+.panel-wrap { max-width:680px; margin:1.8rem auto 0; padding:0 1rem; }
+.panel-box { border:1px solid var(--border); background:var(--panel); padding:1.2rem 1.5rem; position:relative; }
+.panel-badge { position:absolute; top:-0.9rem; left:50%; transform:translateX(-50%); background:var(--ink); padding:0 0.8rem; font-family:'Cinzel',serif; font-size:0.75rem; color:var(--gold-dim); letter-spacing:0.2em; }
 
-/* ── MAIN ── */
-.main {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 0 1rem 3rem;
-}
-.controls {
-  display: flex;
-  gap: 0.8rem;
-  margin-bottom: 1.2rem;
-  align-items: center;
-}
-.btn-all {
-  background: none;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-  font-family: 'Cinzel', serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.25em;
-  padding: 0.6rem 1.5rem;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.25s;
-}
-.btn-all:hover { background: rgba(201,162,39,0.1); }
-.btn-reset {
-  background: none;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: var(--ivory-dim);
-  font-family: 'Crimson Text', serif;
-  font-size: 0.75rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: all 0.25s;
-  letter-spacing: 0.05em;
-}
-.btn-reset:hover { border-color: rgba(255,255,255,0.28); color: var(--ivory); }
+/* BIRTH CHART */
+.chart-label { font-size:0.62rem; color:var(--ivory-dim); letter-spacing:0.25em; text-transform:uppercase; margin-bottom:1rem; text-align:center; }
+.pillars { display:grid; grid-template-columns:repeat(4,1fr); gap:0.8rem; margin-bottom:1.2rem; }
+.pillar { text-align:center; padding:0.5rem 0.3rem; border:1px solid rgba(201,162,39,0.1); }
+.pillar.day-pillar { border-color:rgba(201,162,39,0.4); background:rgba(201,162,39,0.04); }
+.p-label { font-size:0.58rem; color:var(--ivory-dim); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.4rem; }
+.p-stem { font-size:2rem; line-height:1.1; color:var(--gold); }
+.day-pillar .p-stem { color:#fff; }
+.p-branch { font-size:2rem; line-height:1.1; color:var(--ivory); }
+.p-en { font-size:0.58rem; color:var(--ivory-dim); margin-top:0.3rem; line-height:1.3; }
+.chart-meta { display:flex; gap:1.5rem; flex-wrap:wrap; font-size:0.75rem; color:var(--ivory-dim); padding-top:0.8rem; border-top:1px solid rgba(201,162,39,0.1); justify-content:center; }
+.chart-meta strong { color:var(--gold); font-weight:normal; }
+.elem-tags { display:flex; gap:0.5rem; justify-content:center; margin-top:0.7rem; flex-wrap:wrap; }
+.etag { border:1px solid rgba(201,162,39,0.35); color:var(--gold); font-size:0.6rem; letter-spacing:0.1em; padding:0.2rem 0.6rem; font-family:'Cinzel',serif; }
 
-/* ── SET CARD ── */
-.set-card {
-  border: 1px solid var(--border);
-  margin-bottom: 0.6rem;
-  background: var(--panel);
-  transition: border-color 0.3s;
-}
-.set-card.done { border-color: rgba(201,162,39,0.3); }
+/* NOW READING */
+.now-time-label { font-size:0.62rem; color:var(--ivory-dim); letter-spacing:0.2em; text-transform:uppercase; text-align:center; margin-bottom:1rem; }
+.now-pillars { display:grid; grid-template-columns:repeat(4,1fr); gap:0.6rem; margin-bottom:1rem; }
+.np { text-align:center; padding:0.4rem 0.25rem; border:1px solid rgba(201,162,39,0.08); transition:border-color 0.5s,background 0.5s; }
+.np.is-fav   { border-color:rgba(201,162,39,0.4);  background:rgba(201,162,39,0.03); }
+.np.is-unfav { border-color:rgba(139,26,26,0.35);   background:rgba(139,26,26,0.03); }
+.np-label  { font-size:0.54rem; color:var(--ivory-dim); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.25rem; }
+.np-stem   { font-size:1.5rem; line-height:1.1; transition:color 0.5s; }
+.np-branch { font-size:1.5rem; line-height:1.1; transition:color 0.5s; }
+.np-en     { font-size:0.52rem; color:var(--ivory-dim); margin-top:0.2rem; line-height:1.4; }
+.c-fav     { color:var(--gold); }
+.c-unfav   { color:var(--red-soft); }
 
-.set-header {
-  display: flex;
-  align-items: center;
-  padding: 0.7rem 1rem;
-  gap: 0.8rem;
-}
-.s-num {
-  font-family: 'Cinzel', serif;
-  font-size: 0.58rem;
-  color: var(--ivory-dim);
-  letter-spacing: 0.2em;
-  min-width: 42px;
-}
-.btn-toss {
-  background: none;
-  border: 1px solid rgba(201,162,39,0.45);
-  color: var(--gold);
-  font-family: 'Cinzel', serif;
-  font-size: 0.58rem;
-  letter-spacing: 0.15em;
-  padding: 0.3rem 0.8rem;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.25s;
-  white-space: nowrap;
-}
-.btn-toss:hover { background: rgba(201,162,39,0.1); }
-.btn-toss:disabled { opacity: 0.25; cursor: not-allowed; }
+/* AUSPICITY */
+.ausp-row { border-top:1px solid rgba(201,162,39,0.1); padding-top:0.9rem; display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap; }
+.ausp-glyph { text-align:center; min-width:60px; }
+.ausp-zh { font-family:'Cinzel',serif; font-size:2.4rem; line-height:1; transition:color 0.6s,text-shadow 0.6s; }
+.ausp-en { font-size:0.54rem; letter-spacing:0.22em; text-transform:uppercase; margin-top:0.2rem; transition:color 0.6s; }
+.ausp-info { flex:1; min-width:160px; }
+.ausp-desc  { font-size:0.78rem; color:var(--ivory); font-style:italic; line-height:1.5; margin-bottom:0.35rem; }
+.ausp-score-line { font-size:0.6rem; color:var(--ivory-dim); letter-spacing:0.1em; margin-bottom:0.5rem; }
+.ausp-elems { display:flex; gap:0.3rem; flex-wrap:wrap; }
+.aetag { font-size:0.56rem; padding:0.12rem 0.4rem; border:1px solid; letter-spacing:0.06em; font-family:'Cinzel',serif; }
+.aetag.fav   { border-color:rgba(201,162,39,0.5); color:var(--gold); }
+.aetag.unfav { border-color:rgba(139,26,26,0.4);  color:var(--red-soft); }
 
-.toss-hint {
-  flex: 1;
-  font-size: 0.65rem;
-  color: var(--ivory-dim);
-  font-style: italic;
-  text-align: right;
-}
+/* Auspicity color classes */
+.cl-very { color:#c9a227; text-shadow:0 0 20px rgba(201,162,39,0.5); }
+.cl-good { color:#a08832; }
+.cl-neut { color:#8a7a60; }
+.cl-bad  { color:#8b1a1a; }
 
-/* ── SET BODY ── */
-.set-body {
-  display: none;
-  padding: 0.6rem 1rem 1rem;
-  border-top: 1px solid rgba(201,162,39,0.08);
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.set-body.visible { display: flex; }
+/* MAIN */
+.main { max-width:680px; margin:1.8rem auto 0; padding:0 1rem 3rem; }
+.controls { display:flex; gap:0.8rem; margin-bottom:1.2rem; align-items:center; }
+.btn-all { background:none; border:1px solid var(--gold); color:var(--gold); font-family:'Cinzel',serif; font-size:0.62rem; letter-spacing:0.25em; padding:0.6rem 1.5rem; cursor:pointer; text-transform:uppercase; transition:all 0.25s; }
+.btn-all:hover { background:rgba(201,162,39,0.1); }
+.btn-reset { background:none; border:1px solid rgba(255,255,255,0.12); color:var(--ivory-dim); font-family:'Crimson Text',serif; font-size:0.75rem; padding:0.5rem 1rem; cursor:pointer; transition:all 0.25s; letter-spacing:0.05em; }
+.btn-reset:hover { border-color:rgba(255,255,255,0.28); color:var(--ivory); }
 
-/* Hexagram lines */
-.hex-lines {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 5px;
-  min-width: 75px;
-  padding-top: 0.3rem;
-}
-.hline {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  opacity: 0;
-  transform: translateX(-5px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-.hline.show { opacity: 1; transform: translateX(0); }
-.bar-solid {
-  height: 3px;
-  width: 66px;
-  background: var(--gold);
-  box-shadow: 0 0 6px rgba(201,162,39,0.4);
-}
-.bar-l, .bar-r {
-  height: 3px;
-  width: 28px;
-  background: #3d3020;
-}
-.chg { font-size: 0.55rem; color: var(--red); margin-left: 2px; }
+/* SET CARD */
+.set-card { border:1px solid var(--border); margin-bottom:0.6rem; background:var(--panel); transition:border-color 0.3s; }
+.set-card.done { border-color:rgba(201,162,39,0.3); }
+.set-header { display:flex; align-items:center; padding:0.7rem 1rem; gap:0.8rem; }
+.s-num { font-family:'Cinzel',serif; font-size:0.58rem; color:var(--ivory-dim); letter-spacing:0.2em; min-width:42px; }
+.btn-toss { background:none; border:1px solid rgba(201,162,39,0.45); color:var(--gold); font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.15em; padding:0.3rem 0.8rem; cursor:pointer; text-transform:uppercase; transition:all 0.25s; white-space:nowrap; }
+.btn-toss:hover { background:rgba(201,162,39,0.1); }
+.btn-toss:disabled { opacity:0.25; cursor:not-allowed; }
+.toss-hint { flex:1; font-size:0.65rem; color:var(--ivory-dim); font-style:italic; text-align:right; }
+.set-body { display:none; padding:0.6rem 1rem 1rem; border-top:1px solid rgba(201,162,39,0.08); gap:1rem; flex-wrap:wrap; }
+.set-body.visible { display:flex; }
 
-/* Hex info */
-.hex-meta {
-  min-width: 110px;
-}
-.hex-glyph {
-  font-size: 3.5rem;
-  color: var(--gold);
-  line-height: 1;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.4s, transform 0.4s;
-  text-shadow: 0 0 20px rgba(201,162,39,0.4);
-}
-.hex-glyph.show { opacity: 1; transform: scale(1); }
-.hex-num {
-  font-family: 'Cinzel', serif;
-  font-size: 0.6rem;
-  color: var(--ivory-dim);
-  letter-spacing: 0.15em;
-  margin-top: 0.4rem;
-}
-.hex-name {
-  font-size: 0.8rem;
-  color: var(--ivory);
-  margin-top: 0.1rem;
-  line-height: 1.3;
-}
+/* HEXAGRAM */
+.hex-lines { display:flex; flex-direction:column-reverse; gap:5px; min-width:75px; padding-top:0.3rem; }
+.hline { display:flex; align-items:center; gap:4px; opacity:0; transform:translateX(-5px); transition:opacity 0.35s ease,transform 0.35s ease; }
+.hline.show { opacity:1; transform:translateX(0); }
+.bar-solid { height:3px; width:66px; background:var(--gold); box-shadow:0 0 6px rgba(201,162,39,0.4); }
+.bar-l,.bar-r { height:3px; width:28px; background:#3d3020; }
+.chg { font-size:0.55rem; color:var(--red); margin-left:2px; }
+.hex-meta { min-width:110px; }
+.hex-glyph { font-size:3.5rem; color:var(--gold); line-height:1; opacity:0; transform:scale(0.8); transition:opacity 0.4s,transform 0.4s; text-shadow:0 0 20px rgba(201,162,39,0.4); }
+.hex-glyph.show { opacity:1; transform:scale(1); }
+.hex-num  { font-family:'Cinzel',serif; font-size:0.6rem; color:var(--ivory-dim); letter-spacing:0.15em; margin-top:0.4rem; }
+.hex-name { font-size:0.8rem; color:var(--ivory); margin-top:0.1rem; line-height:1.3; }
 
-/* Numbers */
-.num-section {
-  flex: 1;
-  min-width: 180px;
-}
-.num-label {
-  font-size: 0.58rem;
-  color: var(--ivory-dim);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 0.6rem;
-}
-.balls {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-}
-.ball {
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Cinzel', serif;
-  font-size: 0.82rem;
-  color: var(--gold);
-  opacity: 0;
-  transform: scale(0.6);
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-.ball.show {
-  opacity: 1;
-  transform: scale(1);
-}
-.ball.highlight {
-  background: rgba(201,162,39,0.12);
-  box-shadow: 0 0 12px rgba(201,162,39,0.2);
-}
+/* BALLS */
+.num-section { flex:1; min-width:180px; }
+.num-label { font-size:0.58rem; color:var(--ivory-dim); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:0.6rem; }
+.balls { display:flex; gap:0.4rem; flex-wrap:wrap; }
+.ball { width:38px; height:38px; border:1px solid var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Cinzel',serif; font-size:0.82rem; color:var(--gold); opacity:0; transform:scale(0.6); transition:opacity 0.35s ease,transform 0.35s ease; }
+.ball.show { opacity:1; transform:scale(1); }
 
-/* ── FOOTER ── */
-footer {
-  text-align: center;
-  padding: 1.5rem;
-  font-size: 0.62rem;
-  color: rgba(255,255,255,0.18);
-  letter-spacing: 0.18em;
-  border-top: 1px solid rgba(255,255,255,0.04);
-}
+/* FOOTER */
+footer { text-align:center; padding:1.5rem; font-size:0.62rem; color:rgba(255,255,255,0.18); letter-spacing:0.18em; border-top:1px solid rgba(255,255,255,0.04); }
 
-/* ── DAILY ORACLE ── */
-.oracle-day {
-  max-width: 680px;
-  margin: 0 auto 1.2rem;
-  padding: 0 1rem;
-}
-.oracle-day-inner {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  padding: 1rem 1.5rem;
-  position: relative;
-}
-.oracle-day-inner::before {
-  content: '今';
-  position: absolute;
-  top: -0.9rem; left: 50%; transform: translateX(-50%);
-  background: var(--ink);
-  padding: 0 0.8rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem;
-  color: var(--gold-dim);
-  letter-spacing: 0.2em;
-}
-.od-label {
-  font-size: 0.62rem;
-  color: var(--ivory-dim);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-bottom: 0.9rem;
-  text-align: center;
-}
-.od-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.2rem;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-.od-pillar { text-align: center; min-width: 60px; }
-.od-stem   { font-size: 1.8rem; color: var(--gold); line-height: 1.1; }
-.od-branch { font-size: 1.8rem; color: var(--ivory); line-height: 1.1; }
-.od-en     { font-size: 0.58rem; color: var(--ivory-dim); margin-top: 0.3rem; line-height: 1.4; }
-.od-element { flex: 1; min-width: 140px; }
-.od-elem-name {
-  font-family: 'Cinzel', serif;
-  font-size: 0.95rem;
-  color: var(--gold);
-  letter-spacing: 0.12em;
-}
-.od-elem-rel {
-  font-size: 0.68rem;
-  margin-top: 0.25rem;
-  line-height: 1.5;
-}
-.od-elem-rel.favourable { color: var(--gold); }
-.od-elem-rel.neutral    { color: var(--ivory-dim); }
-.od-elem-rel.dim        { color: var(--ivory-dim); opacity: 0.5; }
-.od-boost-badge {
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  margin-top: 0.4rem;
-  color: var(--gold);
-  font-family: 'Cinzel', serif;
-}
-.od-boost-badge.off { color: var(--ivory-dim); opacity: 0.5; }
-.od-mode-wrap { text-align: right; }
-.od-mode-btns { display: flex; gap: 0.4rem; justify-content: flex-end; margin-bottom: 0.4rem; }
-.btn-mode {
-  background: none;
-  border: 1px solid rgba(201,162,39,0.25);
-  color: var(--ivory-dim);
-  font-family: 'Cinzel', serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  padding: 0.3rem 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-mode.active {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: rgba(201,162,39,0.08);
-}
-.btn-mode:hover { border-color: var(--gold); color: var(--gold); }
-.od-mode-desc {
-  font-size: 0.6rem;
-  color: var(--ivory-dim);
-  font-style: italic;
-  line-height: 1.4;
-  max-width: 160px;
-  margin-left: auto;
-}
-.ball.today-el {
-  background: rgba(139,26,26,0.12);
-  border-color: rgba(180,70,70,0.5);
-  color: #bf6060;
-  box-shadow: 0 0 10px rgba(139,26,26,0.18);
-}
-
-@media (max-width: 480px) {
-  .pillars { gap: 0.4rem; }
-  .p-stem, .p-branch { font-size: 1.5rem; }
-  .set-body { flex-direction: column; }
-  .od-mode-wrap { text-align: left; }
-  .od-mode-btns { justify-content: flex-start; }
-  .od-mode-desc { margin-left: 0; max-width: 100%; }
+@media(max-width:480px){
+  .pillars { gap:0.4rem; }
+  .p-stem,.p-branch { font-size:1.5rem; }
+  .now-pillars { gap:0.3rem; }
+  .np-stem,.np-branch { font-size:1.2rem; }
+  .set-body { flex-direction:column; }
 }
 </style>
 </head>
@@ -488,35 +143,33 @@ footer {
 <header>
   <div class="title-zh">八字 · 易經</div>
   <div class="title-en">Ba Zi &amp; I Ching · Mark Six Oracle</div>
-  <div class="title-sub">Numbers weighted by elemental destiny · For entertainment only</div>
+  <div class="title-sub">Ba Zi reads the hour · I Ching enforces the cast · For entertainment only</div>
 </header>
 
-<div class="bazi-wrap">
-  <div class="bazi-chart">
+<!-- BIRTH CHART -->
+<div class="panel-wrap">
+  <div class="panel-box">
+    <span class="panel-badge">命</span>
     <div class="chart-label">Your Four Pillars · 四柱命理 · Born 04 Jan 1989 · 04:00</div>
     <div class="pillars">
       <div class="pillar">
         <div class="p-label">Hour 時</div>
-        <div class="p-stem">戊</div>
-        <div class="p-branch">寅</div>
+        <div class="p-stem">戊</div><div class="p-branch">寅</div>
         <div class="p-en">Yang Earth<br>Tiger</div>
       </div>
       <div class="pillar day-pillar">
         <div class="p-label">Day 日 ★</div>
-        <div class="p-stem" style="color:#fff">庚</div>
-        <div class="p-branch">辰</div>
+        <div class="p-stem" style="color:#fff">庚</div><div class="p-branch">辰</div>
         <div class="p-en">Yang Metal<br>Dragon</div>
       </div>
       <div class="pillar">
         <div class="p-label">Month 月</div>
-        <div class="p-stem">戊</div>
-        <div class="p-branch">子</div>
+        <div class="p-stem">戊</div><div class="p-branch">子</div>
         <div class="p-en">Yang Earth<br>Rat</div>
       </div>
       <div class="pillar">
         <div class="p-label">Year 年</div>
-        <div class="p-stem">戊</div>
-        <div class="p-branch">辰</div>
+        <div class="p-stem">戊</div><div class="p-branch">辰</div>
         <div class="p-en">Yang Earth<br>Dragon</div>
       </div>
     </div>
@@ -527,252 +180,255 @@ footer {
       <span>2026 Annual: <strong>丙午 Yang Fire Horse</strong></span>
     </div>
     <div class="elem-tags">
-      <span class="etag">Water 水 · 1 &amp; 6</span>
-      <span class="etag">Wood 木 · 3 &amp; 8</span>
-      <span class="etag">Fire 火 · 2 &amp; 7</span>
+      <span class="etag">Favourable · Water 水</span>
+      <span class="etag">Favourable · Wood 木</span>
+      <span class="etag">Favourable · Fire 火 · 2026</span>
     </div>
     <div style="text-align:center;font-size:0.62rem;color:var(--ivory-dim);margin-top:0.6rem;font-style:italic;">
-      Strong Yang Metal → Favours Water (output), Wood (indirect wealth / 偏財), Fire (power · 2026 annual energy)
+      Strong Yang Metal · Output = Water · Wealth = Wood · Power = Fire (2026 annual)
     </div>
   </div>
 </div>
 
-<div class="oracle-day" id="daily-oracle"></div>
+<!-- NOW READING -->
+<div class="panel-wrap" style="margin-top:0.8rem;">
+  <div class="panel-box">
+    <span class="panel-badge">今</span>
+    <div class="now-time-label" id="now-time-label">Consulting the moment...</div>
+    <div class="now-pillars" id="now-pillars"></div>
+    <div class="ausp-row">
+      <div class="ausp-glyph">
+        <div class="ausp-zh" id="ausp-zh">—</div>
+        <div class="ausp-en" id="ausp-en">—</div>
+      </div>
+      <div class="ausp-info">
+        <div class="ausp-desc"       id="ausp-desc">Reading elemental alignment...</div>
+        <div class="ausp-score-line" id="ausp-score-line"></div>
+        <div class="ausp-elems"      id="ausp-elems"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- SETS -->
 <div class="main">
   <div class="controls">
-    <button class="btn-all" onclick="tossAll()">✦ Cast All 10 Sets</button>
+    <button class="btn-all"   onclick="tossAll()">✦ Cast All 10 Sets</button>
     <button class="btn-reset" onclick="resetAll()">↺ Reset</button>
   </div>
   <div id="sets"></div>
 </div>
 
-<footer>Hexagrams derived from 3-coin I Ching method · Numbers selected from Ba Zi elemental pool · Entertainment only · Good luck, Captain.</footer>
+<footer>Ba Zi reads the hour · I Ching coin toss enforces the auspicity · All 49 numbers · Entertainment only · Good luck, Captain.</footer>
 
 <script>
-// ─── BA ZI CONFIG ───────────────────────────────────────────────
-// Day Master: 庚 Yang Metal (Strong chart — favourable: Water, Wood, Fire)
-// Indirect Wealth (偏財, windfall/lotto) = Yang Wood → prioritise numbers 3 & 8
-const POOL = [
-  // Water 1,6
-  1,6,11,16,21,26,31,36,41,46,
-  // Wood 3,8 — highest priority (indirect wealth)
-  3,8,13,18,23,28,33,38,43,48,
-  // Fire 2,7 — 2026 annual energy
-  2,7,12,17,22,27,32,37,42,47
+// ══════════════════════════════════════════════
+// BA ZI ENGINE
+// ══════════════════════════════════════════════
+
+const STEMS    = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const STEM_EN  = ['Yang Wood','Yin Wood','Yang Fire','Yin Fire','Yang Earth','Yin Earth','Yang Metal','Yin Metal','Yang Water','Yin Water'];
+const BRANCH_EN= ['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
+
+// 0=Wood 1=Water 2=Fire 3=Earth 4=Metal
+const STEM_ELEM   = [0,0,2,2,3,3,4,4,1,1];
+const BRANCH_ELEM = [1,3,0,0,3,2,2,3,4,4,3,1];
+const ELEM_NAME   = ['Wood 木','Water 水','Fire 火','Earth 土','Metal 金'];
+
+// Strong Yang Metal: Water/Wood/Fire = favourable (+2), Earth/Metal = unfavourable (-1)
+const ELEM_SCORE = [2,2,2,-1,-1];
+const ELEM_FAV   = [true,true,true,false,false];
+
+const HOUR_RANGE = ['23:00–01:00','01:00–03:00','03:00–05:00','05:00–07:00','07:00–09:00','09:00–11:00','11:00–13:00','13:00–15:00','15:00–17:00','17:00–19:00','19:00–21:00','21:00–23:00'];
+
+function calcYearPillar(date) {
+  let y = date.getFullYear();
+  if (date.getMonth()===0 || (date.getMonth()===1 && date.getDate()<4)) y--;
+  return { stem:((y-4)%10+10)%10, branch:((y-4)%12+12)%12 };
+}
+
+function calcMonthBranch(date) {
+  const m=date.getMonth(), d=date.getDate();
+  const termDay=[6,4,6,5,6,6,7,7,8,8,7,7];
+  const bAfter =[1,2,3,4,5,6,7,8,9,10,11,0];
+  const bBefore=[0,1,2,3,4,5,6,7,8,9,10,11];
+  return d>=termDay[m] ? bAfter[m] : bBefore[m];
+}
+
+function calcMonthStem(yearStem, monthBranch) {
+  const mIdx=(monthBranch-2+12)%12;
+  const startStems=[2,4,6,8,0]; // 丙戊庚壬甲 for year groups 甲己/乙庚/丙辛/丁壬/戊癸
+  return (startStems[yearStem%5]+mIdx)%10;
+}
+
+function calcDayPillar(date) {
+  // JDN method — verified: Jan 4 1989 (JDN 2447531) = 庚辰, offsets both = 5
+  const Y=date.getFullYear(), M=date.getMonth()+1, D=date.getDate();
+  const a=Math.floor((14-M)/12), y=Y+4800-a, m=M+12*a-3;
+  const jdn=D+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
+  return { stem:((jdn+5)%10+10)%10, branch:((jdn+5)%12+12)%12 };
+}
+
+function calcHourBranch(hour) { return Math.floor(((hour+1)%24)/2); }
+function calcHourStem(dayStem,hourBranch) {
+  const startStems=[0,2,4,6,8]; // 甲丙戊庚壬
+  return (startStems[dayStem%5]+hourBranch)%10;
+}
+
+// ── Auspicity ────────────────────────────────
+let currentAusp = { score:0, pillars:[], hourBranch:-1 };
+
+function calcAuspicity(now) {
+  const yp=calcYearPillar(now);
+  const mb=calcMonthBranch(now);
+  const ms=calcMonthStem(yp.stem,mb);
+  const dp=calcDayPillar(now);
+  const hb=calcHourBranch(now.getHours());
+  const hs=calcHourStem(dp.stem,hb);
+
+  const pillars=[
+    {label:'Year 年', stem:yp.stem, branch:yp.branch},
+    {label:'Month 月',stem:ms,      branch:mb},
+    {label:'Day 日',  stem:dp.stem, branch:dp.branch},
+    {label:'Hour 時', stem:hs,      branch:hb}
+  ];
+
+  let score=0;
+  for (const p of pillars) {
+    score+=ELEM_SCORE[STEM_ELEM[p.stem]];
+    score+=ELEM_SCORE[BRANCH_ELEM[p.branch]];
+  }
+
+  // Max: +16 (all fav), Min: -8 (all unfav)
+  let zh,en,cl,desc;
+  if      (score>=8)  { zh='大吉'; en='Very Auspicious'; cl='cl-very'; desc='Elemental forces strongly aligned. The oracle speaks with full clarity.'; }
+  else if (score>=3)  { zh='吉';   en='Auspicious';      cl='cl-good'; desc='Conditions favour the cast. Proceed with clear intention.'; }
+  else if (score>=-2) { zh='平';   en='Neutral';          cl='cl-neut'; desc='Elements in balance. Neither tide favours nor resists.'; }
+  else                { zh='凶';   en='Inauspicious';     cl='cl-bad';  desc='Heavy elements cloud the reading. Cast with caution — or wait for the next hour.'; }
+
+  return { pillars, score, zh, en, cl, desc, hourBranch:hb };
+}
+
+// ── Render now-reading ────────────────────────
+const WDAYS  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function renderAuspicity(ausp, now) {
+  const hb=ausp.hourBranch;
+  document.getElementById('now-time-label').textContent =
+    `${WDAYS[now.getDay()]} · ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()} · Hour of ${BRANCHES[hb]} (${BRANCH_EN[hb]}) · ${HOUR_RANGE[hb]}`;
+
+  const con=document.getElementById('now-pillars');
+  con.innerHTML='';
+  for (const p of ausp.pillars) {
+    const se=STEM_ELEM[p.stem], be=BRANCH_ELEM[p.branch];
+    const ps=ELEM_SCORE[se]+ELEM_SCORE[be];
+    const pc=ps>0?'is-fav':ps<0?'is-unfav':'';
+    const div=document.createElement('div');
+    div.className=`np ${pc}`;
+    div.innerHTML=
+      `<div class="np-label">${p.label}</div>`+
+      `<div class="np-stem c-${ELEM_FAV[se]?'fav':'unfav'}">${STEMS[p.stem]}</div>`+
+      `<div class="np-branch c-${ELEM_FAV[be]?'fav':'unfav'}">${BRANCHES[p.branch]}</div>`+
+      `<div class="np-en">${STEM_EN[p.stem]}<br>${BRANCH_EN[p.branch]}</div>`;
+    con.appendChild(div);
+  }
+
+  const zh=document.getElementById('ausp-zh');
+  const en=document.getElementById('ausp-en');
+  zh.className=`ausp-zh ${ausp.cl}`; zh.textContent=ausp.zh;
+  en.className=`ausp-en ${ausp.cl}`; en.textContent=ausp.en;
+  document.getElementById('ausp-desc').textContent=ausp.desc;
+  document.getElementById('ausp-score-line').textContent=
+    `Elemental score ${ausp.score>0?'+':''}${ausp.score} · baked into coin seed · refreshes each 2-hr pillar`;
+
+  const el=document.getElementById('ausp-elems');
+  el.innerHTML='';
+  for (const p of ausp.pillars) {
+    for (const eIdx of [STEM_ELEM[p.stem],BRANCH_ELEM[p.branch]]) {
+      const t=document.createElement('span');
+      t.className=`aetag ${ELEM_FAV[eIdx]?'fav':'unfav'}`;
+      t.textContent=ELEM_NAME[eIdx];
+      el.appendChild(t);
+    }
+  }
+}
+
+function initNowReading() {
+  const now=new Date();
+  currentAusp=calcAuspicity(now);
+  renderAuspicity(currentAusp,now);
+}
+
+setInterval(()=>{
+  const now=new Date(), hb=calcHourBranch(now.getHours());
+  if (hb!==currentAusp.hourBranch) {
+    currentAusp=calcAuspicity(now);
+    renderAuspicity(currentAusp,now);
+  } else {
+    document.getElementById('now-time-label').textContent=
+      `${WDAYS[now.getDay()]} · ${now.getDate()} ${MONTHS[now.getMonth()]} ${now.getFullYear()} · Hour of ${BRANCHES[hb]} (${BRANCH_EN[hb]}) · ${HOUR_RANGE[hb]}`;
+  }
+}, 60000);
+
+
+// ══════════════════════════════════════════════
+// I CHING & NUMBERS
+// ══════════════════════════════════════════════
+
+const POOL=Array.from({length:49},(_,i)=>i+1);
+
+const BIN_IDX={7:0,3:1,5:2,1:3,6:4,2:5,4:6,0:7};
+const HEX_TABLE=[
+  [ 1,10,13,25,44, 6,33,12],
+  [43,58,49,17,28,47,31,45],
+  [14,38,30,21,50,64,56,35],
+  [34,54,55,51,32,40,62,16],
+  [ 9,61,37,42,57,59,53,20],
+  [ 5,60,63, 3,48,29,39, 8],
+  [26,41,22,27,18, 4,52,23],
+  [11,19,36,24,46, 7,15, 2]
 ];
+const HEX_NAMES=['','Qiān · Heaven','Kūn · Earth','Zhūn · Beginning','Méng · Innocence','Xū · Waiting','Sòng · Conflict','Shī · Army','Bǐ · Union','Xiǎo Xù · Small Taming','Lǚ · Treading','Tài · Peace','Pǐ · Standstill','Tóng Rén · Fellowship','Dà Yǒu · Abundance','Qiān · Modesty','Yù · Enthusiasm','Suí · Following','Gù · Repair','Lín · Approach','Guān · Contemplation','Shì Kè · Biting Through','Bì · Grace','Bō · Splitting Apart','Fù · Return','Wú Wàng · Innocence','Dà Xù · Great Taming','Yí · Nourishment','Dà Guò · Excess','Kǎn · The Abyss','Lí · The Flame','Xián · Influence','Héng · Duration','Dùn · Retreat','Dà Zhuàng · Great Strength','Jìn · Progress','Míng Yí · Darkening','Jiā Rén · Family','Kuí · Opposition','Jiǎn · Obstruction','Jiě · Deliverance','Sǔn · Decrease','Yì · Increase','Guài · Breakthrough','Gòu · Encounter','Cuì · Gathering','Shēng · Rising','Kùn · Adversity','Jǐng · The Well','Gé · Revolution','Dǐng · The Vessel','Zhèn · Thunder','Gèn · Mountain','Jiàn · Gradual Advance','Guī Mèi · Maiden','Fēng · Abundance','Lǚ · The Wanderer','Xùn · The Wind','Duì · Joy','Huàn · Dispersion','Jié · Limitation','Zhōng Fú · Inner Truth','Xiǎo Guò · Small Steps','Jì Jì · Completion','Wèi Jì · Transition'];
 
-// ─── DAILY BA ZI CALCULATION ────────────────────────────────────
-const STEMS_ZH   = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const BRANCHES_ZH= ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const STEM_EN    = ['Yang Wood','Yin Wood','Yang Fire','Yin Fire','Yang Earth',
-                    'Yin Earth','Yang Metal','Yin Metal','Yang Water','Yin Water'];
-const BRANCH_EN  = ['Rat','Ox','Tiger','Rabbit','Dragon','Snake',
-                    'Horse','Goat','Monkey','Rooster','Dog','Pig'];
-const STEM_ELEM  = ['Wood','Wood','Fire','Fire','Earth','Earth',
-                    'Metal','Metal','Water','Water'];
+function hexGlyph(n){return String.fromCodePoint(0x4DBF+n);}
 
-// Anchor: Allen's verified birth Day Pillar · 04 Jan 1989 = 庚辰 · cycle index 16
-const ANCHOR_DATE = new Date(1989, 0, 4);
-const ANCHOR_IDX  = 16;
-
-function getDayPillar(date) {
-  const diff = Math.round((date - ANCHOR_DATE) / 86400000);
-  const idx  = ((ANCHOR_IDX + diff) % 60 + 60) % 60;
-  return {
-    idx,
-    stem:     STEMS_ZH[idx % 10],
-    branch:   BRANCHES_ZH[idx % 12],
-    stemEn:   STEM_EN[idx % 10],
-    branchEn: BRANCH_EN[idx % 12],
-    element:  STEM_ELEM[idx % 10]
-  };
+function mkRng(seed){
+  let s=(seed^0xdeadbeef)>>>0;
+  return()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/0x100000000;};
 }
 
-// Allen's favourable elements (Ba Zi analysis)
-const ALLEN_FAV = ['Water', 'Wood', 'Fire'];
-
-// Full element pools — Mark Six 1–49, unit digit mapping
-const ELEMENT_POOLS = {
-  Wood:  [3,8,13,18,23,28,33,38,43,48],
-  Water: [1,6,11,16,21,26,31,36,41,46],
-  Fire:  [2,7,12,17,22,27,32,37,42,47],
-  Earth: [5,10,15,20,25,30,35,40,45],
-  Metal: [4,9,14,19,24,29,34,39,44,49]
-};
-
-// Element display info
-const ELEM_INFO = {
-  Wood:  { zh:'木', rel:'偏財 · Indirect Wealth · Highest Priority', cls:'favourable' },
-  Water: { zh:'水', rel:'Output Element · Favourable',               cls:'favourable' },
-  Fire:  { zh:'火', rel:'Power · 2026 Annual Energy · Favourable',   cls:'favourable' },
-  Earth: { zh:'土', rel:'Resource (excess in chart) · Caution',      cls:'neutral'    },
-  Metal: { zh:'金', rel:'Same Element · Weakens chart',              cls:'dim'        }
-};
-
-// Mode: A = shift weighting for any element; B = only boost if aligned with Allen's chart
-let dailyMode = 'B';
-
-// ─── I CHING HEXAGRAM TABLE ─────────────────────────────────────
-const BIN_IDX = {7:0,3:1,5:2,1:3,6:4,2:5,4:6,0:7};
-
-const HEX_TABLE = [
-  [ 1, 10, 13, 25, 44,  6, 33, 12],
-  [43, 58, 49, 17, 28, 47, 31, 45],
-  [14, 38, 30, 21, 50, 64, 56, 35],
-  [34, 54, 55, 51, 32, 40, 62, 16],
-  [ 9, 61, 37, 42, 57, 59, 53, 20],
-  [ 5, 60, 63,  3, 48, 29, 39,  8],
-  [26, 41, 22, 27, 18,  4, 52, 23],
-  [11, 19, 36, 24, 46,  7, 15,  2]
-];
-
-const HEX_NAMES = [
-  '',
-  'Qiān · Heaven','Kūn · Earth','Zhūn · Beginning',
-  'Méng · Innocence','Xū · Waiting','Sòng · Conflict',
-  'Shī · Army','Bǐ · Union','Xiǎo Xù · Small Taming',
-  'Lǚ · Treading','Tài · Peace','Pǐ · Standstill',
-  'Tóng Rén · Fellowship','Dà Yǒu · Abundance','Qiān · Modesty',
-  'Yù · Enthusiasm','Suí · Following','Gù · Repair',
-  'Lín · Approach','Guān · Contemplation','Shì Kè · Biting Through',
-  'Bì · Grace','Bō · Splitting Apart','Fù · Return',
-  'Wú Wàng · Innocence','Dà Xù · Great Taming','Yí · Nourishment',
-  'Dà Guò · Excess','Kǎn · The Abyss','Lí · The Flame',
-  'Xián · Influence','Héng · Duration','Dùn · Retreat',
-  'Dà Zhuàng · Great Strength','Jìn · Progress','Míng Yí · Darkening',
-  'Jiā Rén · Family','Kuí · Opposition','Jiǎn · Obstruction',
-  'Jiě · Deliverance','Sǔn · Decrease','Yì · Increase',
-  'Guài · Breakthrough','Gòu · Encounter','Cuì · Gathering',
-  'Shēng · Rising','Kùn · Adversity','Jǐng · The Well',
-  'Gé · Revolution','Dǐng · The Vessel','Zhèn · Thunder',
-  'Gèn · Mountain','Jiàn · Gradual Advance','Guī Mèi · Maiden',
-  'Fēng · Abundance','Lǚ · The Wanderer','Xùn · The Wind',
-  'Duì · Joy','Huàn · Dispersion','Jié · Limitation',
-  'Zhōng Fú · Inner Truth','Xiǎo Guò · Small Steps',
-  'Jì Jì · Completion','Wèi Jì · Transition'
-];
-
-function hexGlyph(n) { return String.fromCodePoint(0x4DBF + n); }
-
-// ─── RNG ────────────────────────────────────────────────────────
-function mkRng(seed) {
-  let s = (seed ^ 0xdeadbeef) >>> 0;
-  return () => {
-    s ^= s << 13; s ^= s >>> 17; s ^= s << 5;
-    return (s >>> 0) / 0x100000000;
-  };
+// Ba Zi auspicity baked into seed — different elemental hour = different numbers
+function pickNumbers(hexNum,coinSums,auspScore){
+  const seed=hexNum*101+coinSums.reduce((a,b)=>a+b,0)*17+(auspScore+8)*37;
+  const rng=mkRng(seed);
+  const pool=[...POOL];
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  return pool.slice(0,6).sort((a,b)=>a-b);
 }
 
-// ─── PICK NUMBERS (daily mode aware) ────────────────────────────
-function pickNumbers(hexNum, coinSums) {
-  const seed = hexNum * 101 + coinSums.reduce((a,b)=>a+b,0) * 17;
-  const rng  = mkRng(seed);
-
-  const today     = getDayPillar(new Date());
-  const isFav     = ALLEN_FAV.includes(today.element);
-  const doBoost   = dailyMode === 'A' || (dailyMode === 'B' && isFav);
-
-  // Build pool — duplicating today's element numbers increases their selection probability
-  let pool = [...POOL];
-  if (doBoost) {
-    const boost = ELEMENT_POOLS[today.element] || [];
-    pool = [...pool, ...boost];
-  }
-
-  // Fisher-Yates shuffle
-  for (let i = pool.length-1; i > 0; i--) {
-    const j = Math.floor(rng() * (i+1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-
-  // Pick first 6 unique numbers
-  const seen = new Set(), result = [];
-  for (const n of pool) {
-    if (!seen.has(n)) { seen.add(n); result.push(n); }
-    if (result.length === 6) break;
-  }
-  return result.sort((a,b) => a-b);
+function toss3(){return[1,2,3].map(()=>Math.random()>.5?3:2);}
+function buildHexagram(){
+  const sums=[],lines=[];
+  for(let i=0;i<6;i++){const coins=toss3(),s=coins[0]+coins[1]+coins[2];sums.push(s);lines.push(s===7||s===9?1:0);}
+  const lo=lines[2]*4+lines[1]*2+lines[0],up=lines[5]*4+lines[4]*2+lines[3];
+  return{num:HEX_TABLE[BIN_IDX[up]][BIN_IDX[lo]],lines,sums};
 }
 
-// ─── COIN TOSS ──────────────────────────────────────────────────
-function toss3() { return [1,2,3].map(()=>Math.random()>.5?3:2); }
 
-function buildHexagram() {
-  const sums=[], lines=[];
-  for (let i=0;i<6;i++){
-    const coins=toss3();
-    const s=coins[0]+coins[1]+coins[2];
-    sums.push(s);
-    lines.push(s===7||s===9?1:0);
-  }
-  const lo = lines[2]*4+lines[1]*2+lines[0];
-  const up = lines[5]*4+lines[4]*2+lines[3];
-  const num = HEX_TABLE[BIN_IDX[up]][BIN_IDX[lo]];
-  return {num, lines, sums};
-}
+// ══════════════════════════════════════════════
+// UI
+// ══════════════════════════════════════════════
 
-// ─── DAILY ORACLE UI ────────────────────────────────────────────
-function renderDailyOracle() {
-  const today   = getDayPillar(new Date());
-  const info    = ELEM_INFO[today.element];
-  const isFav   = ALLEN_FAV.includes(today.element);
-  const boostOn = dailyMode === 'A' || (dailyMode === 'B' && isFav);
-  const dateStr = new Date().toLocaleDateString('en-GB', {
-    weekday:'long', day:'numeric', month:'long', year:'numeric'
-  });
-
-  const modeDesc = dailyMode === 'A'
-    ? `${today.element} numbers boosted regardless of alignment`
-    : (isFav
-        ? `${today.element} is favourable — boost active`
-        : `${today.element} not favourable — base pool only`);
-
-  document.getElementById('daily-oracle').innerHTML = `
-    <div class="oracle-day-inner">
-      <div class="od-label">Today's Day Pillar · ${dateStr}</div>
-      <div class="od-row">
-        <div class="od-pillar">
-          <div class="od-stem">${today.stem}</div>
-          <div class="od-branch">${today.branch}</div>
-          <div class="od-en">${today.stemEn}<br>${today.branchEn}</div>
-        </div>
-        <div class="od-element">
-          <div class="od-elem-name">${today.element} ${info.zh}</div>
-          <div class="od-elem-rel ${info.cls}">${info.rel}</div>
-          <div class="od-boost-badge ${boostOn ? '' : 'off'}">${boostOn ? '⊕ Boost Active' : '— Base Pool'}</div>
-        </div>
-        <div class="od-mode-wrap">
-          <div class="od-mode-btns">
-            <button class="btn-mode ${dailyMode==='A'?'active':''}" onclick="setMode('A')">A</button>
-            <button class="btn-mode ${dailyMode==='B'?'active':''}" onclick="setMode('B')">B</button>
-          </div>
-          <div class="od-mode-desc">${modeDesc}</div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function setMode(m) {
-  dailyMode = m;
-  renderDailyOracle();
-  buildSets(); // reset sets so next toss uses new mode
-}
-
-// ─── UI ─────────────────────────────────────────────────────────
-function lineHTML(lineIdx, sums) {
-  const v = sums[lineIdx];
-  const yang = v===7||v===9;
-  const chg  = v===6||v===9;
-  const marker = chg ? `<span class="chg">${v===9?'○':'✕'}</span>` : '';
-  if(yang) return `<div class="bar-solid"></div>${marker}`;
-  return `<div class="bar-l"></div><div class="bar-r"></div>${marker}`;
+function lineHTML(li,sums){
+  const v=sums[li],yang=v===7||v===9,chg=v===6||v===9;
+  const marker=chg?`<span class="chg">${v===9?'○':'✕'}</span>`:'';
+  return yang?`<div class="bar-solid"></div>${marker}`:`<div class="bar-l"></div><div class="bar-r"></div>${marker}`;
 }
 
 function buildSets(){
-  const c=document.getElementById('sets');
-  c.innerHTML='';
+  const c=document.getElementById('sets');c.innerHTML='';
   for(let i=1;i<=10;i++){
     c.innerHTML+=`
     <div class="set-card" id="card-${i}">
@@ -785,8 +441,8 @@ function buildSets(){
         <div class="hex-lines" id="hlines-${i}"></div>
         <div class="hex-meta">
           <div class="hex-glyph" id="glyph-${i}"></div>
-          <div class="hex-num"  id="hnum-${i}"></div>
-          <div class="hex-name" id="hname-${i}"></div>
+          <div class="hex-num"   id="hnum-${i}"></div>
+          <div class="hex-name"  id="hname-${i}"></div>
         </div>
         <div class="num-section">
           <div class="num-label">Mark Six · 六合彩</div>
@@ -797,97 +453,60 @@ function buildSets(){
   }
 }
 
-function tossSet(i, fast=false){
-  const btn   = document.getElementById(`btn-${i}`);
-  const body  = document.getElementById(`body-${i}`);
-  const hlines= document.getElementById(`hlines-${i}`);
-  const glyph = document.getElementById(`glyph-${i}`);
-  const hnum  = document.getElementById(`hnum-${i}`);
-  const hname = document.getElementById(`hname-${i}`);
-  const balls = document.getElementById(`balls-${i}`);
-  const hint  = document.getElementById(`hint-${i}`);
-  const card  = document.getElementById(`card-${i}`);
+function tossSet(i,fast=false){
+  const btn=document.getElementById(`btn-${i}`),body=document.getElementById(`body-${i}`);
+  const hlines=document.getElementById(`hlines-${i}`),glyph=document.getElementById(`glyph-${i}`);
+  const hnum=document.getElementById(`hnum-${i}`),hname=document.getElementById(`hname-${i}`);
+  const balls=document.getElementById(`balls-${i}`),hint=document.getElementById(`hint-${i}`);
+  const card=document.getElementById(`card-${i}`);
 
-  btn.disabled=true;
-  body.className='set-body visible';
-  hlines.innerHTML=''; glyph.innerHTML=''; hnum.innerHTML=''; hname.innerHTML=''; balls.innerHTML='';
+  btn.disabled=true; body.className='set-body visible';
+  hlines.innerHTML='';glyph.innerHTML='';hnum.innerHTML='';hname.innerHTML='';balls.innerHTML='';
   glyph.className='hex-glyph'; hint.textContent='Casting…';
 
-  const {num, lines, sums} = buildHexagram();
-  const numbers = pickNumbers(num, sums);
+  const{num,lines,sums}=buildHexagram();
+  const numbers=pickNumbers(num,sums,currentAusp.score); // <-- Ba Zi auspicity enforced here
 
   const lineEls=[];
   for(let l=0;l<6;l++){
     const el=document.createElement('div');
-    el.className='hline';
-    el.innerHTML=lineHTML(l,sums);
-    el.title=`Line ${l+1}: sum=${sums[l]} (${sums[l]===7?'Young Yang':sums[l]===8?'Young Yin':sums[l]===9?'Old Yang ○':'Old Yin ✕'})`;
-    hlines.appendChild(el);
-    lineEls.push(el);
+    el.className='hline'; el.innerHTML=lineHTML(l,sums);
+    el.title=`Line ${l+1}: ${sums[l]===7?'Young Yang':sums[l]===8?'Young Yin':sums[l]===9?'Old Yang ○':'Old Yin ✕'}`;
+    hlines.appendChild(el); lineEls.push(el);
   }
 
   const D=fast?0:220;
-  lineEls.forEach((el,idx)=>setTimeout(()=>el.classList.add('show'), idx*D));
-
+  lineEls.forEach((el,idx)=>setTimeout(()=>el.classList.add('show'),idx*D));
   const afterLines=fast?80:6*D+180;
-  setTimeout(()=>{
-    glyph.textContent=hexGlyph(num);
-    glyph.classList.add('show');
-    hnum.textContent=`Hexagram ${num}`;
-    hname.textContent=HEX_NAMES[num]||'';
-    hint.textContent='☯';
-    card.classList.add('done');
-  }, afterLines);
 
-  // Ball coloring:
-  // Gold highlight  = Wood numbers (3,8 unit digit) — 偏財, always prioritised
-  // Red tint        = today's element numbers, when boost is active and not Wood
-  const today     = getDayPillar(new Date());
-  const todayPool = ELEMENT_POOLS[today.element] || [];
-  const isFav     = ALLEN_FAV.includes(today.element);
-  const boostOn   = dailyMode === 'A' || (dailyMode === 'B' && isFav);
+  setTimeout(()=>{
+    glyph.textContent=hexGlyph(num); glyph.classList.add('show');
+    hnum.textContent=`Hexagram ${num}`; hname.textContent=HEX_NAMES[num]||'';
+    hint.textContent='☯'; card.classList.add('done');
+  },afterLines);
 
   numbers.forEach((n,idx)=>{
     const b=document.createElement('div');
-    b.className='ball';
-    const u=n%10;
-    if(u===3||u===8) {
-      b.classList.add('highlight');
-    } else if(boostOn && todayPool.includes(n)) {
-      b.classList.add('today-el');
-    }
-    b.textContent=String(n).padStart(2,'0');
+    b.className='ball'; b.textContent=String(n).padStart(2,'0');
     balls.appendChild(b);
-    setTimeout(()=>b.classList.add('show'), afterLines+(idx+1)*(fast?40:120));
+    setTimeout(()=>b.classList.add('show'),afterLines+(idx+1)*(fast?40:120));
   });
 
   const total=afterLines+numbers.length*(fast?40:120)+250;
-  setTimeout(()=>{ btn.disabled=false; btn.textContent='↺ Re-toss'; }, total);
+  setTimeout(()=>{btn.disabled=false;btn.textContent='↺ Re-toss';},total);
 }
 
 async function tossAll(){
-  const btn=document.querySelector('.btn-all');
-  btn.disabled=true;
-  for(let i=1;i<=10;i++){
-    tossSet(i,true);
-    await new Promise(r=>setTimeout(r,60));
-  }
-  setTimeout(()=>btn.disabled=false, 2000);
+  const btn=document.querySelector('.btn-all');btn.disabled=true;
+  for(let i=1;i<=10;i++){tossSet(i,true);await new Promise(r=>setTimeout(r,60));}
+  setTimeout(()=>btn.disabled=false,2000);
 }
 
-function resetAll(){ buildSets(); }
+function resetAll(){buildSets();}
 
-renderDailyOracle();
+// ── Boot ─────────────────────────────────────
+initNowReading();
 buildSets();
-
-// ─── PWA: Register Service Worker ───────────────────────────────
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(() => console.log('[Mark Six Oracle] Service worker registered.'))
-      .catch(err => console.warn('[Mark Six Oracle] SW registration failed:', err));
-  });
-}
 </script>
 </body>
 </html>
